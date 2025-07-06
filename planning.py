@@ -4,6 +4,21 @@ import pandas as pd
 st.set_page_config(page_title="Financial Plan Dashboard", layout="wide")
 
 # --- Input Variables ---
+# st.sidebar.header("Adjust Product Parameters")
+
+# products = ['Ca_rd', 'St_Ry', 'E_Is']
+# params = {}
+
+# for product in products:
+#     st.sidebar.subheader(f"{product} Inputs")
+#     params[product] = {
+#         'Target_Unit': st.sidebar.number_input(f"{product} - Target Unit", min_value=0, value=15 if product == "Ca_rd" else 18 if product == "St_Ry" else 54),
+#         'AOV': st.sidebar.number_input(f"{product} - AOV", min_value=0, step=1000, value=20000 if product in ['Ca_rd', 'St_Ry'] else 10000),
+#         'Ven_Cost': st.sidebar.number_input(f"{product} - Vendor Cost (per unit)", min_value=0, step=500, value=10000 if product == "Ca_rd" else 10000 if product == "St_Ry" else 0),
+#         'Mark_Cost': st.sidebar.number_input(f"{product} - Marketing Cost (total)", min_value=0, step=500, value=18000 if product == "Ca_rd" else 21000 if product == "St_Ry" else 32000),
+#         'Pack_Cost': st.sidebar.number_input(f"{product} - Packaging Cost (total)", min_value=0, step=500, value=12500 if product == "Ca_rd" else 15000 if product == "St_Ry" else 0),
+#     }
+# --- Input Variables ---
 st.sidebar.header("Adjust Product Parameters")
 
 products = ['Ca_rd', 'St_Ry', 'E_Is']
@@ -11,13 +26,37 @@ params = {}
 
 for product in products:
     st.sidebar.subheader(f"{product} Inputs")
+    
+    target_unit = st.sidebar.number_input(
+        f"{product} - Target Unit", min_value=0, value=15 if product == "Ca_rd" else 18 if product == "St_Ry" else 54
+    )
+    
+    avg_cost_per_card = st.sidebar.number_input(
+        f"{product} - Avg Cost per Card", min_value=0, step=10, value=220 if product in ['Ca_rd', 'St_Ry'] else 100
+    )
+    
+    aov = target_unit * avg_cost_per_card  # calculated AOV
+
     params[product] = {
-        'Target_Unit': st.sidebar.number_input(f"{product} - Target Unit", min_value=0, value=15 if product == "Ca_rd" else 18 if product == "St_Ry" else 54),
-        'AOV': st.sidebar.number_input(f"{product} - AOV", min_value=0, step=1000, value=20000 if product in ['Ca_rd', 'St_Ry'] else 10000),
-        'Ven_Cost': st.sidebar.number_input(f"{product} - Vendor Cost (per unit)", min_value=0, step=500, value=10000 if product == "Ca_rd" else 10000 if product == "St_Ry" else 0),
-        'Mark_Cost': st.sidebar.number_input(f"{product} - Marketing Cost (total)", min_value=0, step=500, value=18000 if product == "Ca_rd" else 21000 if product == "St_Ry" else 32000),
-        'Pack_Cost': st.sidebar.number_input(f"{product} - Packaging Cost (total)", min_value=0, step=500, value=12500 if product == "Ca_rd" else 15000 if product == "St_Ry" else 0),
+        'Target_Unit': target_unit,
+        'Avg_Cost_Per_Card': avg_cost_per_card,
+        'AOV': aov,
+        'Ven_Cost': st.sidebar.number_input(
+            f"{product} - Vendor Cost (per unit)", min_value=0, step=500,
+            value=10000 if product in ['Ca_rd', 'St_Ry'] else 0
+        ),
+        'Mark_Cost': st.sidebar.number_input(
+            f"{product} - Marketing Cost (total)", min_value=0, step=500,
+            value=18000 if product == "Ca_rd" else 21000 if product == "St_Ry" else 32000
+        ),
+        'Pack_Cost': st.sidebar.number_input(
+            f"{product} - Packaging Cost (total)", min_value=0, step=500,
+            value=12500 if product == "Ca_rd" else 15000 if product == "St_Ry" else 0
+        ),
     }
+
+    st.sidebar.markdown(f"**{product} - AOV:** ₹{aov:,.0f}")
+
 
 # --- Monthly Distribution Percentage ---
 monthly_distribution = {
